@@ -1,8 +1,11 @@
+#include "slang/text/SourceManager.h"
 #include <cstdlib>
+#include <filesystem>
 #include <iostream>
 #include <string_view>
 #include <getopt.h>
 #include <libgen.h>
+#include <sysexits.h>
 
 std::string_view PROGNAME;
 
@@ -60,7 +63,15 @@ int main(int argc, char **argv)
 	}
 
 	std::string_view pattern = argv[0];
-	std::string_view file = argv[1];
+	std::filesystem::path file = std::filesystem::path(argv[1]);
+
+	slang::SourceManager sm;
+	auto sb = sm.readSource(file);
+	if (!sb) {
+		std::cout << std::format("{:s}: {:s} not found\n", PROGNAME,
+					 file.string());
+		return EX_NOINPUT;
+	}
 
 	return 0;
 }
