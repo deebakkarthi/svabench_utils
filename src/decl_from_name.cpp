@@ -1,11 +1,12 @@
-#include "slang/text/SourceManager.h"
+#include "slang/syntax/SyntaxKind.h"
+#include "slang/syntax/SyntaxTree.h"
+#include "slang/syntax/SyntaxVisitor.h"
+#include "slang/syntax/SyntaxPrinter.h"
 #include <cstdlib>
-#include <filesystem>
 #include <iostream>
 #include <string_view>
 #include <getopt.h>
 #include <libgen.h>
-#include <sysexits.h>
 
 std::string_view PROGNAME;
 
@@ -40,8 +41,8 @@ int main(int argc, char **argv)
 			help();
 			return EXIT_SUCCESS;
 		}
-			// getopt returns '?' if it encounters an option not in
-			// the optstring
+		// getopt returns '?' if it encounters an option not in
+		// the optstring
 		case '?':
 		default: {
 			help(true);
@@ -63,15 +64,52 @@ int main(int argc, char **argv)
 	}
 
 	std::string_view pattern = argv[0];
-	std::filesystem::path file = std::filesystem::path(argv[1]);
 
-	slang::SourceManager sm;
-	auto sb = sm.readSource(file);
-	if (!sb) {
-		std::cout << std::format("{:s}: {:s} not found\n", PROGNAME,
-					 file.string());
-		return EX_NOINPUT;
+	auto tree_or_err = slang::syntax::SyntaxTree::fromFile(argv[1]);
+	if (!tree_or_err) {
+		std::cout << std::format("{:s}: Couldn't open {:s}", PROGNAME,
+					 argv[1]);
+		// OS error
+		return tree_or_err.error().first.value();
 	}
 
-	return 0;
+	auto tree = *tree_or_err;
+
+	bool found = false;
+	// We return after finding the first match
+	// I don't think SystemVerilog allows for
+	// duplicate module declaration. So it should be fine to stop after
+	// finding the first match
+	tree->root().visit(slang::syntax::makeSyntaxVisitor(
+		[&](auto &visitor,
+		    const slang::syntax::ModuleDeclarationSyntax &node) {
+			// node.kind can be of:
+			// - ModuleDeclaration
+			// - InterfaceDeclaration
+			// - ProgramDeclaration
+			// - PackageDeclaration
+			//
+			// We only need modules, so filtering by that
+			if (node.kind ==
+			    slang::syntax::SyntaxKind::ModuleDeclaration) {
+				if (node.header->name.valueText() == pattern) {
+					// Use SyntaxPrinter to handle removing
+					// newlines, etc...
+					std::cout << std::format(
+						"{:s}\n",
+						slang::syntax::SyntaxPrinter()
+							.setSquashNewlines(true)
+							.setIncludeComments(
+								false)
+							.printExcludingLeadingComments(
+								*node.header)
+							.str());
+					found = true;
+					return;
+				}
+				visitor.visitDefault(node);
+			}
+		}));
+
+	return found ? EXIT_SUCCESS : EXIT_FAILURE;
 }
