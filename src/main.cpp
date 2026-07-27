@@ -1,62 +1,53 @@
+#include <iostream>
+
 #include "slang/ast/Compilation.h"
 #include "slang/driver/Driver.h"
 #include "slang/syntax/SyntaxFwd.h"
 #include "slang/syntax/SyntaxNode.h"
-#include "slang/syntax/SyntaxTree.h"
 #include "slang/syntax/SyntaxPrinter.h"
-#include "slang/util/VersionInfo.h"
+#include "slang/syntax/SyntaxTree.h"
 #include "slang/syntax/SyntaxVisitor.h"
-#include <iostream>
+#include "slang/util/VersionInfo.h"
 
 using namespace slang;
 using namespace slang::driver;
 
-int main(int argc, char **argv)
-{
-	Driver driver;
-	driver.addStandardArgs();
+int main(int argc, char** argv) {
+    Driver driver;
+    driver.addStandardArgs();
 
-	std::optional<bool> showHelp;
-	std::optional<bool> showVersion;
-	driver.cmdLine.add("-h,--help", showHelp, "Display available options");
-	driver.cmdLine.add("--version", showVersion,
-			   "Display version information and exit");
+    std::optional<bool> showHelp;
+    std::optional<bool> showVersion;
+    driver.cmdLine.add("-h,--help", showHelp, "Display available options");
+    driver.cmdLine.add("--version", showVersion, "Display version information and exit");
 
-	if (!driver.parseCommandLine(argc, argv))
-		return 1;
+    if (!driver.parseCommandLine(argc, argv))
+        return 1;
 
-	if (showHelp == true) {
-		printf("%s\n",
-		       driver.cmdLine
-			       .getHelpText("slang SystemVerilog compiler")
-			       .c_str());
-		return 0;
-	}
+    if (showHelp == true) {
+        printf("%s\n", driver.cmdLine.getHelpText("slang SystemVerilog compiler").c_str());
+        return 0;
+    }
 
-	if (showVersion == true) {
-		printf("slang version %d.%d.%d+%s\n", VersionInfo::getMajor(),
-		       VersionInfo::getMinor(), VersionInfo::getPatch(),
-		       std::string(VersionInfo::getHash()).c_str());
-		return 0;
-	}
+    if (showVersion == true) {
+        printf("slang version %d.%d.%d+%s\n", VersionInfo::getMajor(), VersionInfo::getMinor(),
+               VersionInfo::getPatch(), std::string(VersionInfo::getHash()).c_str());
+        return 0;
+    }
 
-	if (!driver.processOptions())
-		return 2;
+    if (!driver.processOptions())
+        return 2;
 
-	bool ok = driver.parseAllSources();
-	if (ok) {
-		slang::syntax::SyntaxPrinter sp;
-		auto rt = driver.syntaxTrees[0]->root().childNode(0);
-		rt->visit(syntax::makeSyntaxVisitor(
-			[&](auto &v,
-			    const slang::syntax::ConcurrentAssertionStatementSyntax
-				    &node) {
-				sp.printExcludingLeadingComments(
-					  *node.propertySpec)
-					.append("\n");
-				v.visitDefault(node);
-			}));
-		std::cout << sp.str();
-	}
-	return ok ? 0 : 3;
+    bool ok = driver.parseAllSources();
+    if (ok) {
+        slang::syntax::SyntaxPrinter sp;
+        auto rt = driver.syntaxTrees[0]->root().childNode(0);
+        rt->visit(syntax::makeSyntaxVisitor(
+            [&](auto& v, const slang::syntax::ConcurrentAssertionStatementSyntax& node) {
+                sp.printExcludingLeadingComments(*node.propertySpec).append("\n");
+                v.visitDefault(node);
+            }));
+        std::cout << sp.str();
+    }
+    return ok ? 0 : 3;
 }
