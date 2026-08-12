@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
         return tree_or_err.error().first.value();
     }
 
-    auto tree = *tree_or_err;
+    const auto& tree = *tree_or_err;
 
     bool found = false;
     // We return after finding the first match

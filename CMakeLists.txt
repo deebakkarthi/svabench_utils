@@ -32,4 +32,4 @@ link_libraries(slang::slang)
 
 add_executable(${PROJECT_NAME}_main src/main.cpp)
 add_executable(decl_from_name src/decl_from_name.cpp)
-add_executable(assert_decl_from_decl src/assert_decl_from_decl.cpp)
+add_executable(assert_decl_from_sva src/assert_decl_from_sva.cpp)
