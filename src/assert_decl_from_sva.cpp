@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
             visitor.visitDefault(node);
         }));
 
-    std::cout << std::format("module {:s} (", module_name);
+    std::cout << std::format("module {:s}_assert (", module_name);
     for (auto it = symbols.begin(); it != symbols.end(); ++it) {
         if (std::next(it) != symbols.end()) {
             std::cout << std::format("input {:s},\n", *it);
@@ -105,6 +105,9 @@ int main(int argc, char** argv) {
         std::cout << tree->sourceManager().getSourceText(it).data() << '\n';
     }
     std::cout << "endmodule" << "\n";
+
+    std::cout << std::format("bind {:s} {:s}_assert {:s}_assert_instance (.*);\n", module_name,
+                             module_name, module_name);
 
     return EXIT_SUCCESS;
 }
