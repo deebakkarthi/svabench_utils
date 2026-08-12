@@ -58,6 +58,9 @@ int main(int argc, char** argv) {
         }
     }
 
+    // The input file is just a list of assertions but the final output
+    // is a syntactically correct .sv file. We need a module name to create
+    // that
     if (!module_given) {
         std::cerr << std::format("{:s}: Module name required\n", PROGNAME);
         return EXIT_FAILURE;
@@ -94,9 +97,14 @@ int main(int argc, char** argv) {
     std::cout << ");" << "\n";
 
     // Print out the original text
+    // This should just have one bufferID
+    // For the sake of completeness we are iterating
     for (auto& it : tree->getSourceBufferIds()) {
-        std::cout << tree->sourceManager().getSourceText(it) << "\n";
+        // Have to use .data() instead of just the string_view
+        // cout prints '\0' otherwise
+        std::cout << tree->sourceManager().getSourceText(it).data() << '\n';
     }
     std::cout << "endmodule" << "\n";
+
     return EXIT_SUCCESS;
 }
