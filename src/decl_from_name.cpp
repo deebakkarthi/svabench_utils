@@ -3,6 +3,7 @@
 #include <iostream>
 #include <libgen.h>
 #include <string_view>
+#include <format>
 
 #include "slang/syntax/SyntaxKind.h"
 #include "slang/syntax/SyntaxPrinter.h"

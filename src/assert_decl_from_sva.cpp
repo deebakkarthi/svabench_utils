@@ -6,6 +6,7 @@
 #include <slang/text/SourceManager.h>
 #include <slang/util/Bag.h>
 #include <unistd.h>
+#include <format>
 
 std::string_view PROGNAME;
 
