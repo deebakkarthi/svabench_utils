@@ -1,5 +1,5 @@
-#include <iostream>
 #include <format>
+#include <iostream>
 
 #include "slang/ast/Compilation.h"
 #include "slang/driver/Driver.h"
