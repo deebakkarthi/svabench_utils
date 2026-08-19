@@ -79,8 +79,17 @@ int main(int argc, char** argv) {
     const auto& tree = *tree_or_err;
     std::set<std::string_view> symbols;
 
+    // Identifiers without any accessing
     tree->root().visit(slang::syntax::makeSyntaxVisitor(
         [&](auto& visitor, const slang::syntax::IdentifierNameSyntax& node) {
+            std::cout << node.kind << "\n";
+            symbols.insert(node.identifier.valueText());
+            visitor.visitDefault(node);
+        }));
+
+    // Identifiers that access something like [] or .
+    tree->root().visit(slang::syntax::makeSyntaxVisitor(
+        [&](auto& visitor, const slang::syntax::IdentifierSelectNameSyntax& node) {
             symbols.insert(node.identifier.valueText());
             visitor.visitDefault(node);
         }));
