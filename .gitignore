@@ -3,3 +3,4 @@ _deps/
 build/
 CMakeFiles/
 CMakeCache.txt
+tags
