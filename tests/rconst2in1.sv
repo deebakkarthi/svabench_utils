@@ -1,0 +1,30 @@
+// module rconst2in1
+assert property (rc1[0] == (i[0] | i[2] | i[3] | i[5] | i[6] | i[7] | i[10] | i[11]));
+assert property (rc1[1] == (i[1] | i[2] | i[4] | i[6] | i[8] | i[9]));
+assert property (rc1[2] == 1'b0);
+assert property (rc1[3] == (i[1] | i[2] | i[4] | i[5] | i[6] | i[7] | i[9]));
+assert property (rc1[4] == 1'b0);
+assert property (rc1[5] == 1'b0);
+assert property (rc1[6] == 1'b0);
+assert property (rc1[7] == (i[1] | i[2] | i[3] | i[4] | i[6] | i[7] | i[10]));
+assert property (rc1[14:8] == 7'b0);
+assert property (rc1[15] == (i[1] | i[2] | i[3] | i[5] | i[6] | i[7] | i[8] | i[9] | i[10]));
+assert property (rc1[30:16] == 15'b0);
+assert property (rc1[31] == (i[3] | i[5] | i[6] | i[10] | i[11]));
+assert property (rc1[62:32] == 31'b0);
+assert property (rc1[63] == (i[1] | i[3] | i[7] | i[8] | i[10]));
+
+assert property (rc2[0] == (i[2] | i[3] | i[6] | i[7]));
+assert property (rc2[1] == (i[0] | i[5] | i[6] | i[7] | i[9]));
+assert property (rc2[2] == 1'b0);
+assert property (rc2[3] == (i[3] | i[4] | i[5] | i[6] | i[9] | i[11]));
+assert property (rc2[4] == 1'b0);
+assert property (rc2[5] == 1'b0);
+assert property (rc2[6] == 1'b0);
+assert property (rc2[7] == (i[0] | i[4] | i[6] | i[8] | i[10]));
+assert property (rc2[14:8] == 7'b0);
+assert property (rc2[15] == (i[0] | i[1] | i[3] | i[7] | i[10] | i[11]));
+assert property (rc2[30:16] == 15'b0);
+assert property (rc2[31] == (i[1] | i[2] | i[5] | i[9] | i[11]));
+assert property (rc2[62:32] == 31'b0);
+assert property (rc2[63] == (i[1] | i[3] | i[6] | i[7] | i[8] | i[9] | i[10] | i[11]));
