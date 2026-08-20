@@ -34,5 +34,6 @@ add_executable(${PROJECT_NAME}_main src/main.cpp)
 add_executable(decl_from_name src/decl_from_name.cpp)
 add_executable(assert_decl_from_sva src/assert_decl_from_sva.cpp)
 add_executable(syntax_tree_print src/syntax_tree_print.cpp)
+add_executable(symbols_get src/symbols_get.cpp)
 
 install(TARGETS assert_decl_from_sva)
