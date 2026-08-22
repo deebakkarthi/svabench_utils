@@ -21,16 +21,22 @@ int main(int argc, char** argv) {
         switch (opt) {
             case 'h': {
                 std::cout << usage();
-                break;
+                return EXIT_SUCCESS;
             }
             default: {
                 std::cerr << usage();
-                break;
+                return EXIT_FAILURE;
             }
         }
     }
 
     argc -= optind;
     argv += optind;
-    return 0;
+
+    if (argc > 0) {
+        std::cerr << std::format("{:s}: Extra arguments given\n", PROGNAME);
+        std::cerr << usage();
+    }
+
+    return EXIT_SUCCESS;
 }
