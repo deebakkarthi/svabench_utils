@@ -4,6 +4,8 @@
 #include <string>
 #include <unistd.h>
 
+#include "slang/syntax/SyntaxTree.h"
+
 std::string PROGNAME;
 
 std::string usage() {
@@ -44,7 +46,13 @@ int main(int argc, char** argv) {
         std::cerr << usage();
     }
 
-    std::cout << input_path << "\n";
+    slang::syntax::SyntaxTree::TreeOrError tree_or_err = slang::syntax::SyntaxTree::fromFile(
+        input_path);
+
+    if (!tree_or_err) {
+        std::cerr << std::format("{:s}: Couldn't open {:s}\n", PROGNAME, input_path);
+        return tree_or_err.error().first.value();
+    }
 
     return EXIT_SUCCESS;
 }
