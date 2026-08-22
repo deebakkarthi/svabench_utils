@@ -17,11 +17,17 @@ int main(int argc, char** argv) {
     PROGNAME = basename(argv[0]);
 
     int opt;
-    while ((opt = getopt(argc, argv, "h")) != -1) {
+    std::string input_path = "/dev/stdin";
+
+    while ((opt = getopt(argc, argv, "hf:")) != -1) {
         switch (opt) {
             case 'h': {
                 std::cout << usage();
                 return EXIT_SUCCESS;
+            }
+            case 'f': {
+                input_path = optarg;
+                break;
             }
             default: {
                 std::cerr << usage();
@@ -37,6 +43,8 @@ int main(int argc, char** argv) {
         std::cerr << std::format("{:s}: Extra arguments given\n", PROGNAME);
         std::cerr << usage();
     }
+
+    std::cout << input_path << "\n";
 
     return EXIT_SUCCESS;
 }
